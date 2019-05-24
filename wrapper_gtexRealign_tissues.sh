@@ -79,5 +79,5 @@ fi;
 for dirFP in ${inputDir}/*/ ; do
     curTissue=$(basename ${dirFP})
     echo ${dirFP} ${curTissue_tmp}
-    ./wrapper_gtexRealign_samples.sh ${dirFP} ${outputDir}/${curTissue} ${ref} ${genomeIDX} ${transIDX} ${threadsPerSample}
+    ./wrapper_gtexRealign_samples.sh ${dirFP} ${outputDir}/${curTissue} ${ref} ${genomeIDX} ${transIDX} ${threadsPerSample} ${ann}
 done;

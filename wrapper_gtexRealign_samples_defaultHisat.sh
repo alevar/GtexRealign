@@ -22,10 +22,12 @@ for file in ${inputDir}/*cram ; do
 
     # samtools bam2fq -1 ${outputDir}/tmpData/${sample}_r1.fq -2 ${outputDir}/tmpData/${sample}_r2.fq -s - -0 /dev/null -O -F 0x900 --reference ${ref} --threads ${threads} ${file} | awk 'BEGIN{RS="@";FS="\n";OFS="";ORS=""}; $1 in f {print "@"f[$1] > "'"${outputDir}/tmpData/${sample}_s1.fq"'"; print "@"$0 > "'"${outputDir}/tmpData/${sample}_s2.fq"'"} {f[$1]=$0}'
 #
-    transHISAT2.py align --m1 ./outBladder/tmpData/${sample}_r1.fq,./outBladder/tmpData/${sample}_s1.fq --m2 ./outBladder/tmpData/${sample}_r2.fq,./outBladder/tmpData/${sample}_s2.fq --db ${transIDX} -o ${outputDir}/${sample}.bam --type bowtie --genome-db ${genomeIDX} --threads ${threads} -k 1 --mf --locus
-#
+    # transHISAT2.py align --m1 ./outBladder/tmpData/${sample}_r1.fq,./outBladder/tmpData/${sample}_s1.fq --m2 ./outBladder/tmpData/${sample}_r2.fq,./outBladder/tmpData/${sample}_s2.fq --db ${transIDX} -o ${outputDir}/${sample}.bam --type bowtie --genome-db ${genomeIDX} --threads ${threads} --mf
+
+    hisat2 -1 ./outBladder/tmpData/${sample}_r1.fq,./outBladder/tmpData/${sample}_s1.fq -2 ./outBladder/tmpData/${sample}_r2.fq,./outBladder/tmpData/${sample}_s2.fq -x ${genomeIDX} -p ${threads} -S ${outputDir}/${sample}.sam
+
     # sort alignment by position
-    samtools sort -o ${outputDir}/${sample}_sorted.bam -@ ${threads} ${outputDir}/${sample}.bam
+    samtools sort -o ${outputDir}/${sample}_sorted.bam -@ ${threads} ${outputDir}/${sample}.sam
 #
     # assemble and quantify with stringtie
     stringtie ${outputDir}/${sample}_sorted.bam -p ${threads} -m 150 -G ${annotation} -o ${outputDir}/${sample}.gtf
